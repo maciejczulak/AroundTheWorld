@@ -26,8 +26,7 @@ public class Country {
     private Integer id;
     @NotNull
     private String name;
-    @ManyToOne
     @JoinColumn(name = "continent_id")
-    private Continent continent;
+    private Integer continentId;
 }
 

@@ -28,8 +28,7 @@ public class Hotel {
     private String name;
     private Integer stars;
     private String description;
-    @ManyToOne
     @JoinColumn(name ="city_id")
-    private City city;
+    private Integer cityId;
 
 }

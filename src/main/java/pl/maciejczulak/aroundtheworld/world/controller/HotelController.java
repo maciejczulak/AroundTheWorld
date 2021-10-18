@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.maciejczulak.aroundtheworld.world.model.Airport;
 import pl.maciejczulak.aroundtheworld.world.model.Country;
 import pl.maciejczulak.aroundtheworld.world.model.Hotel;
 import pl.maciejczulak.aroundtheworld.world.repository.HotelRepo;
@@ -46,4 +48,15 @@ public class HotelController {
                 .map(hotel -> ResponseEntity.ok(hotel))
                 .orElse(ResponseEntity.notFound().build());
     }
+    
+    @PutMapping("/{id}")
+    ResponseEntity<Hotel> updateHotelById(@PathVariable Integer id, @RequestBody Hotel toUpdate){
+        log.info("update hotel by Id");
+        if(!hotelRepo.existsById(id)){
+            return ResponseEntity.notFound().build();}
+        toUpdate.setId(id);
+        hotelRepo.save(toUpdate);
+        return ResponseEntity.noContent().build();
+    }
+
 }

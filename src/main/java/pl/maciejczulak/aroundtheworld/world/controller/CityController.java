@@ -6,11 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.maciejczulak.aroundtheworld.world.model.City;
 import pl.maciejczulak.aroundtheworld.world.model.Continent;
+import pl.maciejczulak.aroundtheworld.world.model.Country;
 import pl.maciejczulak.aroundtheworld.world.repository.CityRepo;
 
 import java.net.URI;
@@ -45,6 +47,16 @@ public class CityController {
         return cityRepo.findById(id)
                 .map(city -> ResponseEntity.ok(city))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<City> updateCityById(@PathVariable Integer id, @RequestBody City toUpdate){
+        log.info("update city by Id");
+        if(!cityRepo.existsById(id)){
+            return ResponseEntity.notFound().build();}
+        toUpdate.setId(id);
+        cityRepo.save(toUpdate);
+        return ResponseEntity.noContent().build();
     }
 
 }

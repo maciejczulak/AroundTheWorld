@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.maciejczulak.aroundtheworld.world.model.Continent;
 import pl.maciejczulak.aroundtheworld.world.model.Country;
 import pl.maciejczulak.aroundtheworld.world.repository.CountryRepo;
 
@@ -44,5 +46,15 @@ public class CountryController {
         return countryRepo.findById(id)
                 .map(country -> ResponseEntity.ok(country))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<Country> updateCountryById(@PathVariable Integer id, @RequestBody Country toUpdate){
+        log.info("update country by Id");
+        if(!countryRepo.existsById(id)){
+            return ResponseEntity.notFound().build();}
+        toUpdate.setId(id);
+        countryRepo.save(toUpdate);
+        return ResponseEntity.noContent().build();
     }
 }

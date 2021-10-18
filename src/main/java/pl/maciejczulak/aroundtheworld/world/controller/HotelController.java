@@ -48,7 +48,7 @@ public class HotelController {
                 .map(hotel -> ResponseEntity.ok(hotel))
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @PutMapping("/{id}")
     ResponseEntity<Hotel> updateHotelById(@PathVariable Integer id, @RequestBody Hotel toUpdate){
         log.info("update hotel by Id");

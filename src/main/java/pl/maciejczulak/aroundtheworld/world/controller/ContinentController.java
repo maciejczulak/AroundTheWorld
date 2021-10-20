@@ -3,7 +3,6 @@ package pl.maciejczulak.aroundtheworld.world.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,14 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.maciejczulak.aroundtheworld.world.model.Continent;
-import pl.maciejczulak.aroundtheworld.world.repository.AirportRepo;
-import pl.maciejczulak.aroundtheworld.world.repository.CityRepo;
-import pl.maciejczulak.aroundtheworld.world.repository.ContinentRepo;
-import pl.maciejczulak.aroundtheworld.world.repository.CountryRepo;
-import pl.maciejczulak.aroundtheworld.world.repository.HotelRepo;
 import pl.maciejczulak.aroundtheworld.world.service.ContinentService;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +48,7 @@ public class ContinentController {
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
-    Continent updateContinent(@PathVariable Integer id, @RequestBody Continent toUpdate){
+    public Continent updateContinent(@PathVariable Integer id, @RequestBody Continent toUpdate){
         log.info("Attempt to update continent with id={}", id);
         return continentService.updateContinent(id, toUpdate);
     }

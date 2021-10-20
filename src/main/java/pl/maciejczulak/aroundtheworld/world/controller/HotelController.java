@@ -2,61 +2,66 @@ package pl.maciejczulak.aroundtheworld.world.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.maciejczulak.aroundtheworld.world.model.Airport;
 import pl.maciejczulak.aroundtheworld.world.model.Country;
 import pl.maciejczulak.aroundtheworld.world.model.Hotel;
 import pl.maciejczulak.aroundtheworld.world.repository.HotelRepo;
+import pl.maciejczulak.aroundtheworld.world.service.HotelService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/world/hotel")
 public class HotelController {
     private static final Logger log = LoggerFactory.getLogger(HotelController.class);
-
-    public HotelRepo hotelRepo;
-    public HotelController(HotelRepo hotelRepo) {
-        this.hotelRepo = hotelRepo;
-    }
-
-    @PostMapping
-    ResponseEntity<Hotel> addHotel(@RequestBody Hotel toAdd){
-        log.info("add hotel");
-        Hotel result = hotelRepo.save(toAdd);
-        return ResponseEntity.created(URI.create("/"+result.getId())).body(result);
+    public HotelService hotelService;
+    public HotelController(HotelService hotelService) {
+        this.hotelService = hotelService;
     }
 
     @GetMapping
-    ResponseEntity<List<Hotel>> readAllHotels(){
-        log.info("read all hotels");
-        return ResponseEntity.ok(hotelRepo.findAll());
+    public List<Hotel> getHotelsList(){
+        log.info("Attempt to get hotels list");
+        return hotelService.getHotelsList();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Hotel> readHotelById(@PathVariable Integer id) {
-        log.info("read hotel by Id");
-        return hotelRepo.findById(id)
-                .map(hotel -> ResponseEntity.ok(hotel))
-                .orElse(ResponseEntity.notFound().build());
+    public Optional<Hotel> getHotel(@PathVariable Integer id){
+        log.info("Attempt to get hotel with id={}", id);
+        return hotelService.getHotel(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public Hotel addHotel(@RequestBody Hotel hotel){
+        log.info("Attempt to save hotel {} to database", hotel.getName());
+        return hotelService.addHotel(hotel);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
-    ResponseEntity<Hotel> updateHotelById(@PathVariable Integer id, @RequestBody Hotel toUpdate){
-        log.info("update hotel by Id");
-        if(!hotelRepo.existsById(id)){
-            return ResponseEntity.notFound().build();}
-        toUpdate.setId(id);
-        hotelRepo.save(toUpdate);
-        return ResponseEntity.noContent().build();
+    public Hotel updateHotel(@PathVariable Integer id, @RequestBody Hotel toUpdate){
+        log.info("Attempt to update hotel with id={}", id);
+        return hotelService.updateHotel(id, toUpdate);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteHotel(@PathVariable Integer id){
+        log.info("Attempt to delete hotel with id={}", id);
+        hotelService.deleteHotel(id);
+    }
 }

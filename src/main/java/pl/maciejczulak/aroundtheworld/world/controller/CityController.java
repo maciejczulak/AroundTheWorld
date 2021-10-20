@@ -2,61 +2,62 @@ package pl.maciejczulak.aroundtheworld.world.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.maciejczulak.aroundtheworld.world.model.City;
-import pl.maciejczulak.aroundtheworld.world.model.Continent;
-import pl.maciejczulak.aroundtheworld.world.model.Country;
-import pl.maciejczulak.aroundtheworld.world.repository.CityRepo;
+import pl.maciejczulak.aroundtheworld.world.service.CityService;
 
-import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/world/city")
 public class CityController {
     private static final Logger log = LoggerFactory.getLogger(CityController.class);
-
-    public CityRepo cityRepo;
-    public CityController(CityRepo cityRepo) {
-        this.cityRepo = cityRepo;
-    }
-
-    @PostMapping
-    ResponseEntity<City> addCity(@RequestBody City toAdd){
-        log.info("add city");
-        City result = cityRepo.save(toAdd);
-        return ResponseEntity.created(URI.create("/"+result.getId())).body(result);
+    public CityService cityService;
+    public CityController(CityService cityService) {
+        this.cityService = cityService;
     }
 
     @GetMapping
-    ResponseEntity<List<City>> readAllCities(){
-        log.info("read all cities");
-        return ResponseEntity.ok(cityRepo.findAll());
+    public List<City> getCitiesList(){
+        log.info("Attempt to get cities list");
+        return cityService.getCitiesList();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<City> readCityById(@PathVariable Integer id) {
-        log.info("read city by Id");
-        return cityRepo.findById(id)
-                .map(city -> ResponseEntity.ok(city))
-                .orElse(ResponseEntity.notFound().build());
+    public Optional<City> getCity(@PathVariable Integer id){
+        log.info("Attempt to get city with id={}", id);
+        return cityService.getCity(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public City addCity(@RequestBody City city){
+        log.info("Attempt to save city {} to database", city.getName());
+        return cityService.addCity(city);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
-    ResponseEntity<City> updateCityById(@PathVariable Integer id, @RequestBody City toUpdate){
-        log.info("update city by Id");
-        if(!cityRepo.existsById(id)){
-            return ResponseEntity.notFound().build();}
-        toUpdate.setId(id);
-        cityRepo.save(toUpdate);
-        return ResponseEntity.noContent().build();
+    public City updateCity(@PathVariable Integer id, @RequestBody City toUpdate){
+        log.info("Attempt to update city with id={}", id);
+        return cityService.updateCity(id, toUpdate);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteCity(@PathVariable Integer id){
+        log.info("Attempt to delete city with id={}", id);
+        cityService.deleteCity(id);
+    }
 }

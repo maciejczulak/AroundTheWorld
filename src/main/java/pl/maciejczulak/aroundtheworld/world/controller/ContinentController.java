@@ -3,6 +3,7 @@ package pl.maciejczulak.aroundtheworld.world.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,17 @@ public class ContinentController {
         continentRepo.save(toUpdate);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Continent> deleteContinentById(@PathVariable Integer id, @RequestBody Continent toDelete){
+        log.info("delete continent by Id");
+        if(!continentRepo.existsById(id)){
+            return ResponseEntity.notFound().build();}
+        continentRepo.delete(toDelete);
+        return ResponseEntity.noContent().build();
+    }
+
+
     }
 
 

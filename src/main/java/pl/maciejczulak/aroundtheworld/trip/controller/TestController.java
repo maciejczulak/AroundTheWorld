@@ -1,4 +1,4 @@
-package pl.maciejczulak.aroundtheworld.trip.cotroller;
+package pl.maciejczulak.aroundtheworld.trip.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,6 @@ import pl.maciejczulak.aroundtheworld.trip.model.Test;
 import pl.maciejczulak.aroundtheworld.trip.repository.TestRepo;
 import pl.maciejczulak.aroundtheworld.trip.service.TestService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController

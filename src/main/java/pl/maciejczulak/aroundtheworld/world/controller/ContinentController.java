@@ -2,6 +2,7 @@ package pl.maciejczulak.aroundtheworld.world.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.maciejczulak.aroundtheworld.world.model.Continent;
 import pl.maciejczulak.aroundtheworld.world.repository.AirportRepo;
@@ -17,61 +19,53 @@ import pl.maciejczulak.aroundtheworld.world.repository.CityRepo;
 import pl.maciejczulak.aroundtheworld.world.repository.ContinentRepo;
 import pl.maciejczulak.aroundtheworld.world.repository.CountryRepo;
 import pl.maciejczulak.aroundtheworld.world.repository.HotelRepo;
+import pl.maciejczulak.aroundtheworld.world.service.ContinentService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/world/continent")
 public class ContinentController {
     private static final Logger log = LoggerFactory.getLogger(ContinentController.class);
-
-    public ContinentRepo continentRepo;
-    public ContinentController(ContinentRepo continentRepo) {
-        this.continentRepo = continentRepo;
-    }
-
-    @PostMapping
-    ResponseEntity<Continent> addContinet(@RequestBody Continent toAdd){
-        log.info("add continent");
-        Continent result = continentRepo.save(toAdd);
-        return ResponseEntity.created(URI.create("/"+result.getId())).body(result);
+    public ContinentService continentService;
+    public ContinentController(ContinentService continentService) {
+        this.continentService = continentService;
     }
 
     @GetMapping
-    ResponseEntity<List<Continent>> readAllContinents(){
-        log.info("read all continents");
-        return ResponseEntity.ok(continentRepo.findAll());
+    public List<Continent> getContinentsList(){
+        log.info("Attempt to get continents list");
+        return continentService.getContinentsList();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Continent> readContinentById(@PathVariable Integer id) {
-        log.info("read continent by Id");
-        return continentRepo.findById(id)
-                .map(continent -> ResponseEntity.ok(continent))
-                .orElse(ResponseEntity.notFound().build());
+    public Optional<Continent> getContinent(@PathVariable Integer id){
+        log.info("Attempt to get continent with id={}", id);
+        return continentService.getContinent(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public Continent addContinent(@RequestBody Continent continent){
+        log.info("Attempt to save continent {} to database", continent.getName());
+        return continentService.addContinent(continent);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
-    ResponseEntity<Continent> updateContinentById(@PathVariable Integer id, @RequestBody Continent toUpdate){
-        log.info("update continent by Id");
-        if(!continentRepo.existsById(id)){
-        return ResponseEntity.notFound().build();}
-        toUpdate.setId(id);
-        continentRepo.save(toUpdate);
-        return ResponseEntity.noContent().build();
+    Continent updateContinent(@PathVariable Integer id, @RequestBody Continent toUpdate){
+        log.info("Attempt to update continent with id={}", id);
+        return continentService.updateContinent(id, toUpdate);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    ResponseEntity<Continent> deleteContinentById(@PathVariable Integer id, @RequestBody Continent toDelete){
-        log.info("delete continent by Id");
-        if(!continentRepo.existsById(id)){
-            return ResponseEntity.notFound().build();}
-        continentRepo.delete(toDelete);
-        return ResponseEntity.noContent().build();
+    public void deleteContinent(@PathVariable Integer id){
+        log.info("Attempt to delete continent with id={}", id);
+        continentService.deleteContinent(id);
     }
-
-
     }
 
 

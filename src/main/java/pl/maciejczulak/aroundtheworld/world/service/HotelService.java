@@ -32,6 +32,7 @@ public class HotelService {
     }
 
     public Hotel addHotel(Hotel hotel) {
+        if(hotel.getStars()<1 || hotel.getStars()>5){throw new IllegalArgumentException("Stars rating must by from 1 to 5");}
         log.info("Succesfully saved hotel {} to database", hotel.getName());
         return hotelRepo.save(hotel);
     }
@@ -42,6 +43,7 @@ public class HotelService {
             log.info("Hotel with id={} not found", id);
             return null;
         }
+        if(hotel.getStars()<1 || hotel.getStars()>5){throw new IllegalArgumentException("Stars rating must by from 1 to 5");}
         hotel.setId(id);
         hotelRepo.save(hotel);
         log.info("Hotel with id={} successfully updated", id);

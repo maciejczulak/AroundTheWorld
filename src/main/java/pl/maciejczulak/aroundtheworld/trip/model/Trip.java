@@ -1,6 +1,5 @@
-package pl.maciejczulak.aroundtheworld.world.model;
+package pl.maciejczulak.aroundtheworld.trip.model;
 
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,18 +26,14 @@ public class Trip {
     private String name;
     private Integer startCityId;
     private Integer startAirportId;
-    private LocalDate startDate;
     private Integer destCityId;
     private Integer destAirportId;
     private Integer destHotelId;
+    private LocalDate startDate;
     private LocalDate endDate;
-    private Integer tripLenght;
+    private Long tripLenght;
     private BigDecimal priceForOne;
     private Integer forHowMany;
     private Boolean promoted;
-
-
-
-
 
 }

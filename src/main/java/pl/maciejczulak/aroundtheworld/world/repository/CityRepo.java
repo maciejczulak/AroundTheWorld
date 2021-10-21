@@ -11,5 +11,4 @@ public interface CityRepo extends CrudRepository<City, Integer> {
     Optional<City> findById(Integer id);
     Optional<City> findByName(String name);
     List<City> findAll();
-    List<City> findAllByCountryId(Integer countryId);
-}
+    }

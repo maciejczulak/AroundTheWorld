@@ -11,5 +11,5 @@ public interface AirportRepo extends CrudRepository<Airport, Integer> {
     Optional<Airport> findById(Integer id);
     Optional<Airport> findByName(String name);
     List<Airport> findAll();
-    List<Airport> findAllByCityId(Integer cityId);
+
 }

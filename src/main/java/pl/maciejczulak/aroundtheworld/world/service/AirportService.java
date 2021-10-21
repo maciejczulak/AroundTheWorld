@@ -26,7 +26,7 @@ public class AirportService {
         Optional<Airport> airportOptional = airportRepo.findById(id);
         if(airportOptional.isEmpty()){
             log.info("Airport with id={} not found", id); }
-        log.info("Airport city with id={}", id);
+        log.info("Getting airport with id={}", id);
         return airportOptional;
     }
 

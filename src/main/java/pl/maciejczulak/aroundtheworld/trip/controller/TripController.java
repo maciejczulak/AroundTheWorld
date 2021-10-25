@@ -9,15 +9,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import pl.maciejczulak.aroundtheworld.trip.model.Trip;
 import pl.maciejczulak.aroundtheworld.trip.service.TripService;
-import pl.maciejczulak.aroundtheworld.world.controller.CityController;
-import pl.maciejczulak.aroundtheworld.world.model.City;
 
 import java.util.List;
 import java.util.Optional;
 
+@RestController
+@RequestMapping("/trip")
 public class TripController {
     private static final Logger log = LoggerFactory.getLogger(TripController.class);
     public TripService tripService;

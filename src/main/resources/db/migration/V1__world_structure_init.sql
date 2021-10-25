@@ -32,3 +32,25 @@ create table hotels(
     city_id INTEGER
 );
 alter table hotels add foreign key (city_id) references cities (id);
+
+create table trips(
+                      id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                      name VARCHAR,
+                      start_city_id INTEGER,
+                      start_airport_id INTEGER,
+                      dest_city_id INTEGER,
+                      dest_airport_id  INTEGER,
+                      dest_hotel_id INTEGER,
+                      start_date DATE,
+                      end_date DATE,
+                      trip_lenght LONG,
+                      price_for_one DOUBLE,
+                      for_how_many INTEGER,
+                      promoted BOOLEAN
+);
+alter table trips add foreign key (start_city_id) references cities (id);
+alter table trips add foreign key (dest_city_id) references cities (id);
+alter table trips add foreign key (start_airport_id) references airports (id);
+alter table trips add foreign key (dest_airport_id) references airports (id);
+alter table trips add foreign key (dest_hotel_id) references hotels (id);
+

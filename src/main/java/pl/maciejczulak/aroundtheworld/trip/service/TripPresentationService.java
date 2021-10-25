@@ -2,6 +2,7 @@ package pl.maciejczulak.aroundtheworld.trip.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import pl.maciejczulak.aroundtheworld.trip.model.Trip;
 import pl.maciejczulak.aroundtheworld.trip.repository.TripRepo;
@@ -10,8 +11,12 @@ import pl.maciejczulak.aroundtheworld.world.model.Country;
 import pl.maciejczulak.aroundtheworld.world.repository.CityRepo;
 import pl.maciejczulak.aroundtheworld.world.repository.CountryRepo;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 public class TripPresentationService {
@@ -47,7 +52,7 @@ public class TripPresentationService {
         log.info("Getting incoming trips");
         List<Trip> trips = tripRepo.findAll();
         return trips.stream()
-                .filter(incoming -> incoming.getTripLenght()<=14)
+                .filter(incoming -> DAYS.between(LocalDate.now(), incoming.getStartDate()) <=14)
                 .collect(Collectors.toList());
     }
 
@@ -55,23 +60,22 @@ public class TripPresentationService {
         log.info("Getting 3 incoming trips");
         List<Trip> trips = tripRepo.findAll();
         return trips.stream()
-                .filter(incoming -> incoming.getTripLenght()<=14)
+                .filter(incoming -> DAYS.between(LocalDate.now(), incoming.getStartDate()) <=14)
                 .limit(3)
                 .collect(Collectors.toList());
     }
 
+    // to test
     public List<Trip> getTripsByCountry(Integer countryId){
         log.info("Getting trips to the country with id={}", countryId);
-        List<City> cities = cityRepo.findAll();
-        List<City> citiesInCountry = cities.stream()
-                .filter(c -> c.getCountryId().equals(countryId))
+        List<City> citiesInCountry = cityRepo.findCityByCountryId(countryId);
+        List<Integer> citiesInCountryIds = citiesInCountry.stream()
+                .map(c -> Integer.valueOf(c.getId()))
                 .collect(Collectors.toList());
-
-        List<Trip> trips = tripRepo.findAll();
-        return trips.stream()
-                .filter(c -> c.getDestCityId().equals(citiesInCountry))
-                .collect(Collectors.toList());
+        return tripRepo.findTripByDestCityId(citiesInCountryIds);
     }
+
+
 
 
 }

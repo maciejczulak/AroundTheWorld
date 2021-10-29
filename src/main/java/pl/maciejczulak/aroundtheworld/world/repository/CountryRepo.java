@@ -11,5 +11,6 @@ public interface CountryRepo extends CrudRepository<Country, Integer> {
     Optional<Country> findById(Integer id);
     Optional<Country> findByName(String name);
     List<Country> findAll();
+    List<Country> findCountriesByContinentId(Integer continentId);
 
     }

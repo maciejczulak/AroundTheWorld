@@ -46,9 +46,9 @@ public class TripPresentationController {
     }
 
     @GetMapping("/country/{countryId}")
-    public List<Trip> getTripsByCountry(@PathVariable Integer countryId){
+    public List<Trip> getTripsByDestCountry(@PathVariable Integer countryId){
         log.info("Attempt to get trips to the country with id={}", countryId);
-        return service.getTripsByCountry(countryId);
+        return service.getTripsByDestCountry(countryId);
     }
 
 

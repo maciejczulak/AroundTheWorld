@@ -3,6 +3,8 @@ package pl.maciejczulak.aroundtheworld.trip.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.maciejczulak.aroundtheworld.trip.mapper.CityDTOMapper;
+import pl.maciejczulak.aroundtheworld.trip.model.CityDTO;
 import pl.maciejczulak.aroundtheworld.trip.model.Trip;
 import pl.maciejczulak.aroundtheworld.trip.repository.TripRepo;
 import pl.maciejczulak.aroundtheworld.world.model.City;
@@ -23,11 +25,17 @@ public class TripPresentationService {
     public TripRepo tripRepo;
     public CountryRepo countryRepo;
     public CityRepo cityRepo;
+    public CityDTOMapper mapper;
 
     public TripPresentationService(TripRepo tripRepo, CountryRepo countryRepo, CityRepo cityRepo) {
         this.tripRepo = tripRepo;
         this.countryRepo = countryRepo;
         this.cityRepo = cityRepo;
+    }
+
+    public List<Trip> getAllTripsList() {
+        log.info("Getting all trips list");
+        return tripRepo.findAll();
     }
 
     public List<Trip> getPromotedTrips() {
@@ -51,7 +59,7 @@ public class TripPresentationService {
         log.info("Getting incoming trips");
         List<Trip> trips = tripRepo.findAll();
         return trips.stream()
-                .filter(incoming -> DAYS.between(LocalDate.now(), incoming.getStartDate()) <=14)
+                .filter(incoming -> DAYS.between(LocalDate.now(), incoming.getStartDate()) <= 14)
                 .collect(Collectors.toList());
     }
 
@@ -66,41 +74,38 @@ public class TripPresentationService {
 
     public List<Trip> getTripsByDestCity(Integer cityId){
         log.info("Getting trips to the city with id={}", cityId);
-        return tripRepo.findTripsByDestCityId(cityId);
+        return tripRepo.findAllByDestCityId(cityId);
     }
 
     public List<Trip> getTripsByDestCountry(Integer countryId) {
         log.info("Getting trips to the country with id={}", countryId);
-        List<Integer> citiesInCountryIds = cityRepo.findCitiesByCountryId(countryId).stream()
+        List<Integer> citiesInCountryIds = cityRepo.findAllByCountryId(countryId).stream()
                 .map(c -> Integer.valueOf(c.getId()))
                 .collect(Collectors.toList());
         List<Trip> tripsInCountryList = new ArrayList<>();
         for(int i=0; i<=citiesInCountryIds.size()-1; i++){
-               List<Trip> tripsInCity = tripRepo.findTripsByDestCityId(citiesInCountryIds.get(i));
+               List<Trip> tripsInCity = tripRepo.findAllByDestCityId(citiesInCountryIds.get(i));
                tripsInCountryList.addAll(tripsInCity);
         }
         return tripsInCountryList;
     }
 
     public List <Trip> getTripsByDestContinent(Integer continentId){
-        log.info("Getting trips to the continent with id={}", continentId);
-        List<Integer> countriesInContinentIds = countryRepo.findCountriesByContinentId(continentId).stream()
+        List <Trip> allTrips = tripRepo.findAll();
+
+
+        List<City> allCities = cityRepo.findAll();
+        List<CityDTO> dtoCities = new ArrayList<>();
+        for (int i=0; i<allCities.size(); i++){
+            CityDTO actualDTO = mapper.mapEntityToDTO(allCities.get(i));
+            dtoCities.add(actualDTO);
+        }
+        List<Integer> citiesInContinentIds = dtoCities.stream()
                 .map(c -> Integer.valueOf(c.getId()))
                 .collect(Collectors.toList());
-        List<City> citiesOnContinent = new ArrayList<>();
-        for(int i=0; i<=countriesInContinentIds.size()-1; i++){
-            List<City> citiesInCountryList = cityRepo.findCitiesByCountryId(countriesInContinentIds.get(i));
-            citiesOnContinent.addAll(citiesInCountryList);
-        }
-        List<Integer> citiesInContinentIds = citiesOnContinent.stream()
-                .map(c -> Integer.valueOf(c.getId()))
-                .collect(Collectors.toList());
-        List<Trip> tripsInContinentList = new ArrayList<>();
-        for(int i=0; i<=citiesInContinentIds.size()-1; i++){
-            List<Trip> tripsInCountry = tripRepo.findTripsByDestCityId(citiesInContinentIds.get(i));
-            tripsInContinentList.addAll(tripsInCountry);
-        }
-        return tripsInContinentList;
+
+
+        return null;
     }
 
 

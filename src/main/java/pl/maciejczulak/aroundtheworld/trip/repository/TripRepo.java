@@ -10,5 +10,5 @@ public interface TripRepo extends CrudRepository<Trip, Integer> {
     Optional<Trip> findById(Integer id);
     Optional<Trip> findByName(String name);
     List<Trip> findAll();
-    List<Trip> findTripsByDestCityId(Integer destDityId);
+    List<Trip> findAllByDestCityId(Integer destCityId);
 }

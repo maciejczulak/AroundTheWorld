@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.maciejczulak.aroundtheworld.trip.mapper.CityDTOMapper;
+import pl.maciejczulak.aroundtheworld.trip.mapper.TripDTOMapper;
 import pl.maciejczulak.aroundtheworld.trip.model.CityDTO;
 import pl.maciejczulak.aroundtheworld.trip.model.Trip;
+import pl.maciejczulak.aroundtheworld.trip.model.TripDTO;
 import pl.maciejczulak.aroundtheworld.trip.repository.TripRepo;
 import pl.maciejczulak.aroundtheworld.world.model.City;
 import pl.maciejczulak.aroundtheworld.world.model.Country;
@@ -25,12 +27,13 @@ public class TripPresentationService {
     public TripRepo tripRepo;
     public CountryRepo countryRepo;
     public CityRepo cityRepo;
-    public CityDTOMapper mapper;
+    public TripDTOMapper mapper;
 
-    public TripPresentationService(TripRepo tripRepo, CountryRepo countryRepo, CityRepo cityRepo) {
+    public TripPresentationService(TripRepo tripRepo, CountryRepo countryRepo, CityRepo cityRepo, TripDTOMapper mapper) {
         this.tripRepo = tripRepo;
         this.countryRepo = countryRepo;
         this.cityRepo = cityRepo;
+        this.mapper = mapper;
     }
 
     public List<Trip> getAllTripsList() {
@@ -78,32 +81,14 @@ public class TripPresentationService {
     }
 
     public List<Trip> getTripsByDestCountry(Integer countryId) {
-        log.info("Getting trips to the country with id={}", countryId);
-        List<Integer> citiesInCountryIds = cityRepo.findAllByCountryId(countryId).stream()
-                .map(c -> Integer.valueOf(c.getId()))
+        return tripRepo.findAll().stream()
+                .map(a->mapper.mapTripToDTO(a))
+                .filter(s->s.getDestCountryId().equals(countryId))
+                .map(d->mapper.mapDTOtoTrip(d))
                 .collect(Collectors.toList());
-        List<Trip> tripsInCountryList = new ArrayList<>();
-        for(int i=0; i<=citiesInCountryIds.size()-1; i++){
-               List<Trip> tripsInCity = tripRepo.findAllByDestCityId(citiesInCountryIds.get(i));
-               tripsInCountryList.addAll(tripsInCity);
-        }
-        return tripsInCountryList;
     }
 
     public List <Trip> getTripsByDestContinent(Integer continentId){
-        List <Trip> allTrips = tripRepo.findAll();
-
-
-        List<City> allCities = cityRepo.findAll();
-        List<CityDTO> dtoCities = new ArrayList<>();
-        for (int i=0; i<allCities.size(); i++){
-            CityDTO actualDTO = mapper.mapEntityToDTO(allCities.get(i));
-            dtoCities.add(actualDTO);
-        }
-        List<Integer> citiesInContinentIds = dtoCities.stream()
-                .map(c -> Integer.valueOf(c.getId()))
-                .collect(Collectors.toList());
-
 
         return null;
     }

@@ -50,10 +50,8 @@ class TripPresentationServiceTest {
     final static Trip TRIP1 = new Trip(1, "Francja-elegancja", 4, null, 1, null, null, INCOMING_DATE, null, null, null, null, true);
     final static Trip TRIP2 = new Trip(2, "Francja-elokwencja", 4, null, 1, null, null, INCOMING_DATE, null, null, null, null, true);
     final static Trip TRIP3 = new Trip(3, "Słoneczna hiszpania", 1, null, 5, null, null, INCOMING_DATE, null, null, null, null, false);
-    List <Trip> ALL_TRIPS = List.of(TRIP1, TRIP2, TRIP3);
+    final static List <Trip> ALL_TRIPS = List.of(TRIP1, TRIP2, TRIP3);
 
-    @Mock
-    private ContinentRepo continentRepo;
     @Mock
     private CountryRepo countryRepo;
     @Mock
@@ -108,7 +106,6 @@ class TripPresentationServiceTest {
         when(cityRepo.findById(CITY6.getId())).thenReturn(Optional.of(CITY6));
         when(countryRepo.findById(COUNTRY1.getId())).thenReturn(Optional.of(COUNTRY1));
         when(countryRepo.findById(COUNTRY2.getId())).thenReturn(Optional.of(COUNTRY2));
-
 
         List<Trip> tripsByDestCountryId = tripPresentationService.getTripsByDestCountry(searchingId);
 

@@ -54,3 +54,12 @@ alter table trips add foreign key (start_airport_id) references airports (id);
 alter table trips add foreign key (dest_airport_id) references airports (id);
 alter table trips add foreign key (dest_hotel_id) references hotels (id);
 
+create table users(
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(30) NOT NULL,
+    password VARCHAR(30) NOT NULL,
+    role VARCHAR(30) NOT NULL
+);
+
+
+

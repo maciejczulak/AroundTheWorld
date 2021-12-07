@@ -94,7 +94,7 @@ class TripPresentationServiceTest {
         assertThat(tripsByDestCityId.size()).isEqualTo(2);
     }
 
-    @Test
+    /*@Test
     void shouldGetTripsByDestCountryId(){
         int searchingId = 1;
         when(tripRepo.findAll()).thenReturn(ALL_TRIPS);
@@ -111,8 +111,9 @@ class TripPresentationServiceTest {
 
         assertThat(tripsByDestCountryId.size()).isEqualTo(3);
 
+}
+     */
 
    }
 
 
-}

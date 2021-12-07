@@ -27,7 +27,7 @@ public class TripController {
         this.tripService = tripService;
     }
 
-    @GetMapping
+    @GetMapping()
     public List<Trip> getTripsList(){
         log.info("Attempt to get trip list");
         return tripService.getTripsList();

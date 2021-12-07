@@ -31,4 +31,6 @@ public class Hotel {
     @JoinColumn(name ="city_id")
     private Integer cityId;
 
+    
+
 }
